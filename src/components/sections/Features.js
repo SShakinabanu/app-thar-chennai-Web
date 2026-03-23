@@ -2,45 +2,47 @@ import React from 'react';
 import SectionReveal from '../ui/SectionReveal';
 
 const Features = () => {
-    const topoPattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 400'%3E%3Cpath d='M-100 200c50-20 100-20 150 0s100 20 150 0 100-20 150 0 100 20 150 0 100-20 150 0' stroke='white' fill='none' stroke-opacity='0.1' /%3E%3Cpath d='M-100 250c50-20 100-20 150 0s100 20 150 0 100-20 150 0 100 20 150 0 100-20 150 0' stroke='white' fill='none' stroke-opacity='0.1' /%3E%3Cpath d='M-100 300c50-20 100-20 150 0s100 20 150 0 100-20 150 0 100 20 150 0 100-20 150 0' stroke='white' fill='none' stroke-opacity='0.1' /%3E%3Cpath d='M-100 150c50-20 100-20 150 0s100 20 150 0 100-20 150 0 100 20 150 0 100-20 150 0' stroke='white' fill='none' stroke-opacity='0.1' /%3E%3Cpath d='M-100 100c50-20 100-20 150 0s100 20 150 0 100-20 150 0 100 20 150 0 100-20 150 0' stroke='white' fill='none' stroke-opacity='0.1' /%3E%3C/svg%3E")`;
-
     return (
-        <section style={{ display: 'flex', flexDirection: 'row', minHeight: '600px' }} className="border-y border-black/5">
-
-            {/* LEFT: White Title Block — SectionReveal REMOVED to fix invisible text */}
-            <div style={{ width: '45%', backgroundColor: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6rem' }}>
-                <h2 style={{
-                    fontSize: 'clamp(2rem, 4vw, 3.5rem)',
-                    fontWeight: 900,
-                    color: '#1B3624',
-                    lineHeight: 1.1,
-                    textTransform: 'uppercase',
-                    letterSpacing: '-0.02em'
-                }}>
-                    DISCOVER <br />
-                    THE THRILL OF <br />
-                    OFFROADING <br />
-                    WITH THAR <br />
-                    CHENNAI
-                </h2>
-            </div>
-
-            {/* RIGHT: Gold Content Block */}
-            <div style={{ width: '55%', backgroundColor: '#A4914B', position: 'relative', display: 'flex', alignItems: 'center', padding: '6rem', overflow: 'hidden' }}>
-                <div style={{
-                    position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.4,
-                    backgroundImage: topoPattern, backgroundSize: '100% 100%'
-                }} />
-
-                <SectionReveal direction="left" delay={0.2}>
-                    <div style={{ position: 'relative', zIndex: 10, maxWidth: '640px' }} className="space-y-8 text-white/90 text-lg md:text-xl font-medium leading-relaxed">
-                        <p>Thar Chennai 4x4 Club is a passionate community of Mahindra Thar enthusiasts united by a love for adventure, off-roading, and camaraderie. The group brings together like-minded individuals to connect, explore, and celebrate the spirit of freedom and rugged exploration.</p>
-                        <p>From challenging expeditions and adventure drives to workshops and family gatherings, the club blends thrill with responsibility, promoting safe and eco-conscious off-roading.</p>
-                        <p>Inclusive and vibrant, Thar Chennai 4x4 Club offers opportunities to learn, share, and build lasting friendships. True to its vision — "Off-Roading Redefined, Adventure Unmatched" — the community welcomes every Thar owner to push boundaries, conquer challenges, and embrace the spirit of adventure.</p>
+        <section className="py-24 bg-white">
+            <div className="container mx-auto px-6">
+                <div className="flex flex-col lg:flex-row items-center gap-16">
+                    <div className="lg:w-1/2">
+                        <SectionReveal>
+                            <span className="text-primary font-black uppercase tracking-[0.3em] text-xs mb-4 block">Our Commitment</span>
+                            <h2 className="text-4xl md:text-6xl font-black text-secondary leading-[1.1] mb-8 tracking-tighter uppercase font-oswald">
+                                MORE THAN JUST <br />
+                                <span className="italic">OFF-ROADING</span>
+                            </h2>
+                            <div className="space-y-6 text-secondary/70 text-lg leading-relaxed font-medium">
+                                <p>
+                                    At Thar Chennai, we believe in adventure with a purpose. Beyond the trails, we are committed to building a community that values safety, vehicle knowledge, and social responsibility.
+                                </p>
+                                <p>
+                                    From technical workshops on vehicle recovery to social initiatives and relief efforts, our club stands for excellence and camaraderie in every aspect of the off-roading lifestyle.
+                                </p>
+                            </div>
+                        </SectionReveal>
                     </div>
-                </SectionReveal>
+                    <div className="lg:w-1/2 grid grid-cols-2 gap-4">
+                        <div className="space-y-4">
+                            <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
+                                <img src="https://static.wixstatic.com/media/5164b1_7691b890b941480d929ed11f6bb0da9b~mv2.jpg/v1/fill/w_330,h_410,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/5164b1_7691b890b941480d929ed11f6bb0da9b~mv2.jpg" alt="Workshop" className="w-full h-full object-cover" />
+                            </div>
+                            <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
+                                <img src="https://static.wixstatic.com/media/5164b1_bd491a8ab7ee41d0a4b39650134ee0a9~mv2.jpg/v1/crop/x_24,y_0,w_1233,h_1158/fill/w_426,h_400,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/98fee54a-bdcb-4607-9562-26db7fc7b766.jpg" alt="Meetup" className="w-full h-full object-cover" />
+                            </div>
+                        </div>
+                        <div className="space-y-4 pt-12">
+                            <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
+                                <img src="https://static.wixstatic.com/media/5164b1_67e99ed866f640a79160fbe98fd55886~mv2.jpg/v1/crop/x_439,y_0,w_402,h_499/fill/w_330,h_410,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/da70662c-1f11-4268-b69e-65961884b61f_JPG.jpg" alt="Social Responsibility" className="w-full h-full object-cover" />
+                            </div>
+                            <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
+                                <img src="https://images.pexels.com/photos/19806867/pexels-photo-19806867.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Trail" className="w-full h-full object-cover" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
         </section>
     );
 };

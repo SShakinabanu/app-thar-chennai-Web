@@ -6,7 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // Public Pages
 const Home = lazy(() => import('./pages/public/Home'));
-const Membership = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/public/About'));
+const Membership = lazy(() => import('./pages/public/JoinUs'));
 const Events = lazy(() => import('./pages/public/Events'));
 const EventDetails = lazy(() => import('./pages/public/EventDetails'));
 const Contact = lazy(() => import('./pages/public/Contact'));
@@ -38,8 +39,10 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<PublicLayout />}>
-              <Route index element={<Home />} />
-              <Route path="membership" element={<Membership />} />
+              <Route index element={<Membership />} />
+              <Route path="home" element={<Home />} />
+              <Route path="about" element={<About />} />
+              <Route path="join-us" element={<Membership />} />
               <Route path="events" element={<Events />} />
               <Route path="events/:id" element={<EventDetails />} />
               <Route path="contact" element={<Contact />} />

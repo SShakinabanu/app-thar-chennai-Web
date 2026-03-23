@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { AlertCircle, Trash2, CheckCircle2 } from 'lucide-react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import '../App.css';
-import '../pages/Home.css';
+import '../../App.css';
+import '../Home.css';
 
 // Default to India
 
@@ -269,7 +269,9 @@ const Home = () => {
               value={formData.variant}
               onChange={handleInputChange}
               className={errors.variant ? 'error-input' : ''}
+              style={{ cursor: 'pointer' }}
             >
+              <option value="">Select a variant</option>
               <option value="Petrol Manual 4x4">Petrol Manual 4x4</option>
               <option value="Petrol Automatic 4x4">Petrol Automatic 4x4</option>
               <option value="Diesel Manual 4x4">Diesel Manual 4x4</option>

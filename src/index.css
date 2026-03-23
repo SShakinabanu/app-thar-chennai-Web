@@ -2,18 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Oswald:wght@400;700&display=swap");
 
 :root {
-  --primary: #c41e3a;
-  --primary-dark: #a01830;
+  --primary: #D14023;
+  --primary-dark: #b0351d;
   --secondary: #1a1a1a;
   --accent: #ffd700;
-  --background: #050505;
-  --surface: #0f0f0f;
-  --text: #ffffff;
-  --text-muted: #a0a0a0;
-  --border: rgba(255, 255, 255, 0.1);
+  --background: #F2EFE9;
+  --surface: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #666666;
+  --border: rgba(0, 0, 0, 0.1);
   --success: #10b981;
   --error: #ef4444;
 }
@@ -136,11 +136,11 @@ button {
 .loading-screen {
   position: fixed;
   inset: 0;
-  background: #050505;
+  background: #F2EFE9;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #c41e3a;
+  color: #D14023;
   font-weight: 900;
   font-size: 1.5rem;
 }

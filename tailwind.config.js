@@ -7,12 +7,13 @@ module.exports = {
         extend: {
             colors: {
                 primary: {
-                    DEFAULT: '#c41e3a',
-                    dark: '#a01830',
-                    light: '#e62e4d',
+                    DEFAULT: '#D14023', // Rust Orange
+                    dark: '#b0351d',
+                    light: '#e35a3d',
                 },
                 secondary: '#1a1a1a',
                 accent: '#ffd700',
+                cream: '#F2EFE9', // Light Theme Background
                 dark: {
                     DEFAULT: '#050505',
                     surface: '#0f0f0f',
@@ -22,6 +23,7 @@ module.exports = {
             fontFamily: {
                 outfit: ['Outfit', 'sans-serif'],
                 inter: ['Inter', 'sans-serif'],
+                oswald: ['Oswald', 'sans-serif'],
             },
             animation: {
                 'fade-in': 'fadeIn 0.5s ease-out forwards',
