@@ -3,28 +3,6 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Menu, X, Instagram, Facebook, Twitter, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const DropdownMenu = ({ items }) => (
-    <>
-        <style>{`
-            .dropdown-item:hover { color: #D14023 !important; background-color: #f9fafb !important; }
-        `}</style>
-        <div className="absolute top-full left-0 pt-2 min-w-[240px] z-50 opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto transition-all duration-200">
-            <div className="bg-white border border-black/5 rounded-2xl shadow-2xl overflow-hidden py-4 px-2">
-                {items.map((item) => (
-                    <Link
-                        key={item.label}
-                        to={item.to}
-                        className="block px-6 py-3 text-sm rounded-xl transition-all font-black uppercase tracking-widest font-oswald dropdown-item"
-                        style={{ color: '#1a1a1a' }}
-                    >
-                        {item.label}
-                    </Link>
-                ))}
-            </div>
-        </div>
-    </>
-);
-
 const Navbar = () => {
     const [scrolled, setScrolled] = React.useState(false);
     const [isOpen, setIsOpen] = React.useState(false);
@@ -71,172 +49,228 @@ const Navbar = () => {
     ];
 
     return (
-        <nav className={`fixed top-0 left-0 w-full z-[1000] transition-all duration-500 ${scrolled ? 'py-0 h-20 shadow-2xl shadow-black/5' : 'py-0 h-24'}`}>
-            <div className="bg-white h-full flex items-center transition-all duration-500">
-                <div className="w-full px-4 md:px-6 lg:px-10">
-                    <div className="flex items-center justify-between gap-12">
+        <>
+            <style>{`
+                .nav-group { position: relative; }
+                .nav-group .nav-dropdown {
+                    display: none;
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    padding-top: 8px;
+                    min-width: 240px;
+                    z-index: 9999;
+                }
+                .nav-group:hover .nav-dropdown { display: block; }
+                .nav-dropdown-inner {
+                    background: white;
+                    border: 1px solid rgba(0,0,0,0.05);
+                    border-radius: 16px;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+                    padding: 12px 8px;
+                }
+                .nav-dropdown-link {
+                    display: block;
+                    padding: 10px 24px;
+                    font-size: 13px;
+                    font-weight: 900;
+                    text-transform: uppercase;
+                    letter-spacing: 0.1em;
+                    color: #1a1a1a;
+                    text-decoration: none;
+                    border-radius: 10px;
+                    transition: background 0.15s, color 0.15s;
+                    font-family: 'Oswald', sans-serif;
+                }
+                .nav-dropdown-link:hover {
+                    background: #f3f4f6;
+                    color: #c0002a;
+                }
+                .nav-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    font-size: 14px;
+                    font-weight: 900;
+                    text-transform: uppercase;
+                    letter-spacing: 0.1em;
+                    color: #1a1a1a;
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    font-family: 'Oswald', sans-serif;
+                    transition: color 0.2s;
+                    padding: 0;
+                    white-space: nowrap;
+                }
+                .nav-btn:hover { color: #c0002a; }
+                .nav-btn svg { transition: transform 0.25s; }
+                .nav-group:hover .nav-btn svg { transform: rotate(180deg); }
+                .nav-link {
+                    font-size: 14px;
+                    font-weight: 900;
+                    text-transform: uppercase;
+                    letter-spacing: 0.1em;
+                    color: #1a1a1a;
+                    text-decoration: none;
+                    font-family: 'Oswald', sans-serif;
+                    transition: color 0.2s;
+                    white-space: nowrap;
+                }
+                .nav-link:hover { color: #c0002a; }
+                .nav-link.active { color: #c0002a; }
+            `}</style>
 
-                        {/* Logo */}
-                        <Link to="/" className="group flex items-center gap-3 shrink-0">
-                            <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center transform group-hover:rotate-[15deg] transition-all duration-500 shadow-xl shadow-primary/20">
-                                <span className="text-white font-black text-2xl italic">T</span>
-                            </div>
-                            <div className="flex flex-col -gap-1">
-                                <span className="text-2xl font-black tracking-tighter leading-none" style={{ color: '#1a1a1a' }}>
-                                    THAR<span className="text-primary italic">CHENNAI</span>
-                                </span>
-                                <span className="text-[10px] font-black tracking-[0.4em] uppercase" style={{ color: 'rgba(26,26,26,0.3)' }}>4x4 Motor Club</span>
-                            </div>
-                        </Link>
+            <nav style={{ position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 1000, background: 'white', boxShadow: scrolled ? '0 2px 20px rgba(0,0,0,0.06)' : 'none', transition: 'all 0.3s', height: scrolled ? '72px' : '88px', display: 'flex', alignItems: 'center' }}>
+                <div style={{ width: '100%', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '32px' }}>
 
-                        {/* Desktop Menu */}
-                        <div className="hidden md:flex items-center justify-end flex-1 gap-10 h-full">
-                            <style>{`
-                                .nav-item-btn:hover { color: #D14023 !important; }
-                                .nav-item-link:hover { color: #D14023 !important; }
-                            `}</style>
-                            {navItems.map((item) =>
-                                item.dropdown ? (
-                                    <div key={item.label} className="relative group h-full flex items-center">
-                                        <button
-                                            className="flex items-center gap-2 text-sm font-black uppercase tracking-widest transition-all font-oswald group-hover:scale-110 nav-item-btn"
-                                            style={{ color: '#1a1a1a' }}
-                                        >
-                                            {item.label}
-                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="opacity-50 group-hover:rotate-180 group-hover:opacity-100 transition-all duration-300">
-                                                <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                        </button>
-                                        {/* Dropdown is always in DOM, shown via CSS group-hover */}
-                                        <div className="absolute top-full left-0 pt-0 min-w-[240px] z-50 opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto transition-all duration-200">
-                                            <div className="bg-white border border-black/5 rounded-2xl shadow-2xl overflow-hidden py-4 px-2 mt-2">
-                                                {item.dropdown.map((sub) => (
-                                                    <Link
-                                                        key={sub.label}
-                                                        to={sub.to}
-                                                        className="block px-6 py-3 text-sm hover:bg-gray-50 rounded-xl transition-all font-black uppercase tracking-widest font-oswald dropdown-item"
-                                                        style={{ color: '#1a1a1a' }}
-                                                    >
-                                                        {sub.label}
-                                                    </Link>
-                                                ))}
-                                            </div>
+                    {/* Logo */}
+                    <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none', flexShrink: 0 }}>
+                        <div style={{ width: '48px', height: '48px', background: '#c0002a', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(192,0,42,0.25)' }}>
+                            <span style={{ color: 'white', fontWeight: 900, fontSize: '22px', fontStyle: 'italic' }}>T</span>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span style={{ fontSize: '22px', fontWeight: 900, letterSpacing: '-0.03em', lineHeight: 1, color: '#1a1a1a' }}>
+                                THAR<span style={{ color: '#c0002a', fontStyle: 'italic' }}>CHENNAI</span>
+                            </span>
+                            <span style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '0.35em', textTransform: 'uppercase', color: 'rgba(26,26,26,0.3)' }}>4x4 Motor Club</span>
+                        </div>
+                    </Link>
+
+                    {/* Desktop Nav */}
+                    <div className="hidden md:flex" style={{ alignItems: 'center', gap: '36px', flex: 1, justifyContent: 'flex-end' }}>
+                        {navItems.map((item) =>
+                            item.dropdown ? (
+                                <div key={item.label} className="nav-group">
+                                    <button className="nav-btn">
+                                        {item.label}
+                                        <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                                            <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </button>
+                                    <div className="nav-dropdown">
+                                        <div className="nav-dropdown-inner">
+                                            {item.dropdown.map((sub) => (
+                                                <Link key={sub.label} to={sub.to} className="nav-dropdown-link">
+                                                    {sub.label}
+                                                </Link>
+                                            ))}
                                         </div>
                                     </div>
-                                ) : (
-                                    <Link
-                                        key={item.label}
-                                        to={item.to}
-                                        className={`text-sm font-black uppercase tracking-widest transition-all font-oswald hover:scale-110 nav-item-link ${location.pathname === item.to ? 'text-primary' : ''}`}
-                                        style={{ color: location.pathname === item.to ? undefined : '#1a1a1a' }}
-                                    >
-                                        {item.label}
-                                    </Link>
-                                )
-                            )}
-                        </div>
+                                </div>
+                            ) : (
+                                <Link
+                                    key={item.label}
+                                    to={item.to}
+                                    className={`nav-link${location.pathname === item.to ? ' active' : ''}`}
+                                >
+                                    {item.label}
+                                </Link>
+                            )
+                        )}
+                    </div>
 
-                        {/* Hamburger */}
-                        <div
-                            className="md:hidden cursor-pointer hover:text-primary transition-colors"
-                            style={{ color: '#1a1a1a' }}
-                            onClick={() => setIsOpen(!isOpen)}
-                        >
-                            {isOpen ? <X size={32} strokeWidth={3} /> : <Menu size={32} strokeWidth={3} />}
-                        </div>
+                    {/* Hamburger */}
+                    <div
+                        className="md:hidden"
+                        style={{ cursor: 'pointer', color: '#1a1a1a' }}
+                        onClick={() => setIsOpen(!isOpen)}
+                    >
+                        {isOpen ? <X size={30} strokeWidth={3} /> : <Menu size={30} strokeWidth={3} />}
                     </div>
                 </div>
-            </div>
 
-            {/* Mobile Menu */}
-            {isOpen && (
-                <div className="absolute top-full left-0 w-full bg-white border-t border-black/5 p-8 md:hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-y-auto max-h-[85vh] animate-fade-in">
-                    <div className="flex flex-col gap-2">
-                        {navItems.map((item) => (
-                            <div key={item.label}>
-                                {item.dropdown ? (
-                                    <div className="mb-2">
-                                        <button
-                                            className={`flex items-center justify-between w-full text-lg font-black uppercase tracking-widest py-4 border-b border-black/5 font-oswald ${mobileOpen === item.label ? 'text-primary' : ''}`}
-                                            style={{ color: mobileOpen === item.label ? undefined : '#1a1a1a' }}
-                                            onClick={() => setMobileOpen(mobileOpen === item.label ? null : item.label)}
+                {/* Mobile Menu */}
+                {isOpen && (
+                    <div style={{ position: 'absolute', top: '100%', left: 0, width: '100%', background: 'white', borderTop: '1px solid rgba(0,0,0,0.05)', padding: '24px', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }} className="md:hidden">
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            {navItems.map((item) => (
+                                <div key={item.label}>
+                                    {item.dropdown ? (
+                                        <div style={{ marginBottom: '4px' }}>
+                                            <button
+                                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '16px 0', borderBottom: '1px solid rgba(0,0,0,0.05)', background: 'none', border: 'none', borderBottom: '1px solid rgba(0,0,0,0.05)', cursor: 'pointer', fontSize: '17px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.08em', color: mobileOpen === item.label ? '#c0002a' : '#1a1a1a', fontFamily: 'Oswald, sans-serif' }}
+                                                onClick={() => setMobileOpen(mobileOpen === item.label ? null : item.label)}
+                                            >
+                                                {item.label}
+                                                <svg width="16" height="16" viewBox="0 0 12 12" fill="none" style={{ transform: mobileOpen === item.label ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s' }}>
+                                                    <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                            </button>
+                                            {mobileOpen === item.label && (
+                                                <div style={{ background: '#f9fafb', borderRadius: '12px', padding: '12px 20px', display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '8px' }}>
+                                                    {item.dropdown.map((sub) => (
+                                                        <Link
+                                                            key={sub.label}
+                                                            to={sub.to}
+                                                            style={{ fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(26,26,26,0.6)', padding: '10px 0', textDecoration: 'none', fontFamily: 'Oswald, sans-serif' }}
+                                                            onClick={() => { setIsOpen(false); setMobileOpen(null); }}
+                                                        >
+                                                            {sub.label}
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <Link
+                                            to={item.to}
+                                            style={{ display: 'block', fontSize: '17px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.08em', padding: '16px 0', borderBottom: '1px solid rgba(0,0,0,0.05)', color: location.pathname === item.to ? '#c0002a' : '#1a1a1a', textDecoration: 'none', fontFamily: 'Oswald, sans-serif' }}
+                                            onClick={() => setIsOpen(false)}
                                         >
                                             {item.label}
-                                            <svg width="16" height="16" viewBox="0 0 12 12" fill="none" className={`transition-transform duration-300 ${mobileOpen === item.label ? 'rotate-180' : ''}`}>
-                                                <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                        </button>
-                                        {mobileOpen === item.label && (
-                                            <div className="bg-gray-50 rounded-2xl px-6 py-4 flex flex-col gap-2 mt-4 animate-slide-up">
-                                                {item.dropdown.map((sub) => (
-                                                    <Link
-                                                        key={sub.label}
-                                                        to={sub.to}
-                                                        className="text-sm font-bold uppercase tracking-widest py-3 transition-colors font-oswald hover:text-primary"
-                                                        style={{ color: 'rgba(26,26,26,0.6)' }}
-                                                        onClick={() => { setIsOpen(false); setMobileOpen(null); }}
-                                                    >
-                                                        {sub.label}
-                                                    </Link>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <Link
-                                        to={item.to}
-                                        className={`block text-lg font-black uppercase tracking-widest py-4 border-b border-black/5 font-oswald ${location.pathname === item.to ? 'text-primary' : ''}`}
-                                        style={{ color: location.pathname === item.to ? undefined : '#1a1a1a' }}
-                                        onClick={() => setIsOpen(false)}
-                                    >
-                                        {item.label}
-                                    </Link>
-                                )}
-                            </div>
-                        ))}
-                        <Link
-                            to="/membership"
-                            className="mt-10 block text-center bg-primary text-white text-sm font-black uppercase tracking-widest py-5 rounded-2xl shadow-2xl shadow-primary/30"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            Become a Member
-                        </Link>
+                                        </Link>
+                                    )}
+                                </div>
+                            ))}
+                            <Link
+                                to="/membership"
+                                style={{ marginTop: '24px', display: 'block', textAlign: 'center', background: '#c0002a', color: 'white', fontSize: '13px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em', padding: '18px', borderRadius: '14px', textDecoration: 'none', fontFamily: 'Oswald, sans-serif' }}
+                                onClick={() => setIsOpen(false)}
+                            >
+                                Become a Member
+                            </Link>
+                        </div>
                     </div>
-                </div>
-            )}
-        </nav>
+                )}
+            </nav>
+        </>
     );
 };
 
 const Footer = () => {
     return (
-        <footer className="bg-white pt-24 pb-12 border-t border-black/5">
-            <div className="w-full px-4 md:px-6 lg:px-10">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16">
-                    <div className="col-span-1 md:col-span-2">
-                        <Link to="/" className="flex items-center gap-2 mb-8">
-                            <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
-                                <span className="text-white font-black italic">T</span>
+        <footer style={{ background: 'white', paddingTop: '80px', paddingBottom: '40px', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '48px', paddingBottom: '60px' }}>
+                    {/* Brand */}
+                    <div style={{ gridColumn: 'span 2' }}>
+                        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', marginBottom: '24px' }}>
+                            <div style={{ width: '32px', height: '32px', background: '#c0002a', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <span style={{ color: 'white', fontWeight: 900, fontStyle: 'italic', fontSize: '16px' }}>T</span>
                             </div>
-                            <span className="text-xl font-black tracking-tighter" style={{ color: '#1a1a1a' }}>
-                                THAR<span className="text-primary italic">CHENNAI</span>
+                            <span style={{ fontSize: '18px', fontWeight: 900, letterSpacing: '-0.02em', color: '#1a1a1a' }}>
+                                THAR<span style={{ color: '#c0002a', fontStyle: 'italic' }}>CHENNAI</span>
                             </span>
                         </Link>
-                        <p className="text-secondary/60 max-w-sm mb-10 text-sm leading-relaxed font-medium">
+                        <p style={{ color: 'rgba(26,26,26,0.5)', fontSize: '13px', lineHeight: '1.7', maxWidth: '300px', marginBottom: '28px' }}>
                             Southern India's premier community for Mahindra Thar owners. We curate elite off-road experiences and luxury expeditions for the bold and the adventurous.
                         </p>
-                        <div className="flex gap-4">
+                        <div style={{ display: 'flex', gap: '12px' }}>
                             {[Instagram, Facebook, Twitter].map((Icon, i) => (
-                                <a key={i} href="#" className="w-11 h-11 rounded-xl bg-cream flex items-center justify-center text-secondary/40 hover:bg-primary hover:text-white transition-all duration-300">
-                                    <Icon size={18} />
+                                <a key={i} href="#" style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(26,26,26,0.4)', textDecoration: 'none', transition: 'background 0.2s' }}
+                                    onMouseEnter={e => { e.currentTarget.style.background = '#c0002a'; e.currentTarget.style.color = 'white'; }}
+                                    onMouseLeave={e => { e.currentTarget.style.background = '#f3f4f6'; e.currentTarget.style.color = 'rgba(26,26,26,0.4)'; }}>
+                                    <Icon size={16} />
                                 </a>
                             ))}
                         </div>
                     </div>
 
+                    {/* Quick Access */}
                     <div>
-                        <h4 className="text-secondary font-black mb-8 uppercase tracking-[0.2em] text-[10px]">Quick Access</h4>
-                        <ul className="flex flex-col gap-4">
+                        <h4 style={{ color: '#1a1a1a', fontWeight: 900, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '24px' }}>Quick Access</h4>
+                        <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '14px' }}>
                             {[
                                 { name: 'Home', path: '/' },
                                 { name: 'About Us', path: '/about' },
@@ -245,30 +279,41 @@ const Footer = () => {
                                 { name: 'Contact', path: '/contact' }
                             ].map((item) => (
                                 <li key={item.name}>
-                                    <Link to={item.path} className="text-secondary/50 hover:text-primary transition-colors text-xs font-bold uppercase tracking-widest">{item.name}</Link>
+                                    <Link to={item.path} style={{ color: 'rgba(26,26,26,0.45)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', textDecoration: 'none', transition: 'color 0.2s' }}
+                                        onMouseEnter={e => e.currentTarget.style.color = '#c0002a'}
+                                        onMouseLeave={e => e.currentTarget.style.color = 'rgba(26,26,26,0.45)'}>
+                                        {item.name}
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
                     </div>
 
+                    {/* Office */}
                     <div>
-                        <h4 className="text-secondary font-black mb-8 uppercase tracking-[0.2em] text-[10px]">Office</h4>
-                        <p className="text-secondary/50 text-xs font-bold uppercase tracking-widest leading-loose mb-6">
+                        <h4 style={{ color: '#1a1a1a', fontWeight: 900, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '24px' }}>Office</h4>
+                        <p style={{ color: 'rgba(26,26,26,0.45)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', lineHeight: '2', marginBottom: '20px' }}>
                             Suite 405, Prestige Towers,<br />
                             Nungambakkam High Road,<br />
                             Chennai, TN 600034
                         </p>
-                        <a href="mailto:support@tharclub.in" className="text-primary text-[11px] font-black uppercase tracking-widest border-b-2 border-primary/20 pb-1">support@tharclub.in</a>
+                        <a href="mailto:support@tharclub.in" style={{ color: '#c0002a', fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em', textDecoration: 'none', borderBottom: '2px solid rgba(192,0,42,0.2)', paddingBottom: '2px' }}>
+                            support@tharclub.in
+                        </a>
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row justify-between items-center pt-10 border-t border-black/5 gap-8">
-                    <p className="text-secondary/30 text-[9px] font-bold tracking-[0.25em] uppercase">
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid rgba(0,0,0,0.05)', gap: '16px' }}>
+                    <p style={{ color: 'rgba(26,26,26,0.25)', fontSize: '9px', fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', margin: 0 }}>
                         &copy; {new Date().getFullYear()} THAR CHENNAI CLUB. ALL RIGHTS RESERVED.
                     </p>
-                    <div className="flex gap-8">
+                    <div style={{ display: 'flex', gap: '24px' }}>
                         {['Privacy', 'Terms', 'Cookies'].map((item) => (
-                            <a key={item} href="#" className="text-secondary/30 hover:text-primary transition-colors text-[9px] font-bold tracking-[0.25em] uppercase" style={{ textDecoration: 'none' }}>{item}</a>
+                            <a key={item} href="#" style={{ color: 'rgba(26,26,26,0.25)', fontSize: '9px', fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', textDecoration: 'none', transition: 'color 0.2s' }}
+                                onMouseEnter={e => e.currentTarget.style.color = '#c0002a'}
+                                onMouseLeave={e => e.currentTarget.style.color = 'rgba(26,26,26,0.25)'}>
+                                {item}
+                            </a>
                         ))}
                     </div>
                 </div>
@@ -286,18 +331,17 @@ const WhatsAppButton = () => (
         href="https://wa.me/918946045205?text=Hello%20I%20want%20to%20join%20Thar%20Club"
         target="_blank"
         rel="noreferrer"
-        className="fixed bottom-8 right-8 w-16 h-16 bg-[#25D366] text-white rounded-2xl flex items-center justify-center z-[2000] shadow-2xl shadow-green-500/20 transition-all group"
+        style={{ position: 'fixed', bottom: '32px', right: '32px', width: '60px', height: '60px', background: '#25D366', color: 'white', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000, boxShadow: '0 8px 32px rgba(37,211,102,0.3)', textDecoration: 'none' }}
     >
-        <div className="absolute inset-0 rounded-2xl bg-[#25D366] animate-ping opacity-20 group-hover:hidden" />
-        <MessageCircle size={32} />
+        <MessageCircle size={28} />
     </motion.a>
 );
 
 const PublicLayout = () => {
     return (
-        <div className="min-h-screen flex flex-col bg-cream selection:bg-primary selection:text-white transition-colors duration-500">
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#fdf6ee' }}>
             <Navbar />
-            <main className="flex-grow pt-0">
+            <main style={{ flexGrow: 1, paddingTop: 0 }}>
                 <Outlet />
             </main>
             <Footer />
