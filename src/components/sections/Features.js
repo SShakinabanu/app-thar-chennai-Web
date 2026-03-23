@@ -1,77 +1,46 @@
 import React from 'react';
 import SectionReveal from '../ui/SectionReveal';
-import { Shield, Map, Zap, Users } from 'lucide-react';
-
-const FeatureCard = ({ icon: Icon, title, description, index }) => (
-    <SectionReveal delay={index * 0.1} className="group p-10 rounded-3xl bg-secondary/30 border border-white/5 hover:border-primary/30 transition-all duration-500">
-        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-8 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-            <Icon size={32} />
-        </div>
-        <h3 className="text-2xl font-bold text-white mb-4">{title}</h3>
-        <p className="text-white/50 leading-relaxed">{description}</p>
-    </SectionReveal>
-);
 
 const Features = () => {
-    const features = [
-        {
-            icon: Shield,
-            title: "Expert Guidance",
-            description: "Learn off-roading from certified enthusiasts with over a decade of experience in tough terrains."
-        },
-        {
-            icon: Map,
-            title: "Remote Trails",
-            description: "Access exclusive, scouted trails that you won't find on any map. Real adventure starts here."
-        },
-        {
-            icon: Users,
-            title: "Elite Community",
-            description: "Network with high-profile Thar owners. It's not just a club, it's a brotherhood on wheels."
-        },
-        {
-            icon: Zap,
-            title: "Priority Service",
-            description: "Get exclusive discounts and priority service at partner workshops and accessory stores."
-        }
-    ];
+    const topoPattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 400'%3E%3Cpath d='M-100 200c50-20 100-20 150 0s100 20 150 0 100-20 150 0 100 20 150 0 100-20 150 0' stroke='white' fill='none' stroke-opacity='0.1' /%3E%3Cpath d='M-100 250c50-20 100-20 150 0s100 20 150 0 100-20 150 0 100 20 150 0 100-20 150 0' stroke='white' fill='none' stroke-opacity='0.1' /%3E%3Cpath d='M-100 300c50-20 100-20 150 0s100 20 150 0 100-20 150 0 100 20 150 0 100-20 150 0' stroke='white' fill='none' stroke-opacity='0.1' /%3E%3Cpath d='M-100 150c50-20 100-20 150 0s100 20 150 0 100-20 150 0 100 20 150 0 100-20 150 0' stroke='white' fill='none' stroke-opacity='0.1' /%3E%3Cpath d='M-100 100c50-20 100-20 150 0s100 20 150 0 100-20 150 0 100 20 150 0 100-20 150 0' stroke='white' fill='none' stroke-opacity='0.1' /%3E%3C/svg%3E")`;
 
     return (
-        <section className="py-32 bg-dark relative overflow-hidden">
-            {/* Background Decor */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
+        <section style={{ display: 'flex', flexDirection: 'row', minHeight: '600px' }} className="border-y border-black/5">
 
-            <div className="container mx-auto px-6 relative z-10">
-                <div className="grid lg:grid-cols-2 gap-20 items-center mb-32">
-                    <div className="space-y-32">
-                        <SectionReveal direction="right">
-                            <span className="text-primary font-bold tracking-[0.2em] uppercase text-sm mb-6 block">Our DNA</span>
-                            <h2 className="text-5xl md:text-7xl font-black text-white leading-tight mb-8">
-                                EXTREME DRIVES. <br />
-                                <span className="text-white/20">PREMIUM LIFESTYLE.</span>
-                            </h2>
-                            <p className="text-xl text-white/50 leading-relaxed max-w-xl">
-                                Established in 2021, Thar Club Chennai has become the benchmark for luxury off-roading communities in India. We combine the ruggedness of the Thar with premium hospitalities.
-                            </p>
-                        </SectionReveal>
-
-                        <div className="grid grid-cols-2 gap-6 mt-12">
-                            <SectionReveal delay={0.2} className="aspect-square rounded-3xl overflow-hidden border border-white/10 group">
-                                <img src="/pexels-qaarif-9846190.jpg" alt="Thar on rocks" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                            </SectionReveal>
-                            <SectionReveal delay={0.4} className="aspect-square rounded-3xl overflow-hidden border border-white/10 mt-12 group">
-                                <img src="/pexels-imadclicks-35071363.jpg" alt="Thar in desert" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                            </SectionReveal>
-                        </div>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 gap-8 h-fit">
-                        {features.map((feature, i) => (
-                            <FeatureCard key={i} {...feature} index={i} />
-                        ))}
-                    </div>
-                </div>
+            {/* LEFT: White Title Block — SectionReveal REMOVED to fix invisible text */}
+            <div style={{ width: '45%', backgroundColor: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6rem' }}>
+                <h2 style={{
+                    fontSize: 'clamp(2rem, 4vw, 3.5rem)',
+                    fontWeight: 900,
+                    color: '#1B3624',
+                    lineHeight: 1.1,
+                    textTransform: 'uppercase',
+                    letterSpacing: '-0.02em'
+                }}>
+                    DISCOVER <br />
+                    THE THRILL OF <br />
+                    OFFROADING <br />
+                    WITH THAR <br />
+                    CHENNAI
+                </h2>
             </div>
+
+            {/* RIGHT: Gold Content Block */}
+            <div style={{ width: '55%', backgroundColor: '#A4914B', position: 'relative', display: 'flex', alignItems: 'center', padding: '6rem', overflow: 'hidden' }}>
+                <div style={{
+                    position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.4,
+                    backgroundImage: topoPattern, backgroundSize: '100% 100%'
+                }} />
+
+                <SectionReveal direction="left" delay={0.2}>
+                    <div style={{ position: 'relative', zIndex: 10, maxWidth: '640px' }} className="space-y-8 text-white/90 text-lg md:text-xl font-medium leading-relaxed">
+                        <p>Thar Chennai 4x4 Club is a passionate community of Mahindra Thar enthusiasts united by a love for adventure, off-roading, and camaraderie. The group brings together like-minded individuals to connect, explore, and celebrate the spirit of freedom and rugged exploration.</p>
+                        <p>From challenging expeditions and adventure drives to workshops and family gatherings, the club blends thrill with responsibility, promoting safe and eco-conscious off-roading.</p>
+                        <p>Inclusive and vibrant, Thar Chennai 4x4 Club offers opportunities to learn, share, and build lasting friendships. True to its vision — "Off-Roading Redefined, Adventure Unmatched" — the community welcomes every Thar owner to push boundaries, conquer challenges, and embrace the spirit of adventure.</p>
+                    </div>
+                </SectionReveal>
+            </div>
+
         </section>
     );
 };

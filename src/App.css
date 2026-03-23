@@ -183,6 +183,132 @@ select {
   text-align: center;
 }
 
+/* Validation Styles */
+.error-input {
+  border-color: #ef4444 !important;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+/* File Upload Enhancement */
+.uploaded-file-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8f9fa;
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+  border: 1px dashed #ddd;
+  margin-top: 0.5rem;
+}
+
+.file-name {
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.delete-file-btn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 0.2rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.delete-file-btn:hover {
+  color: #ef4444;
+}
+
+/* Country Picker Styles */
+.country-picker-container {
+  position: relative;
+  width: 100%;
+}
+
+.country-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 320px;
+  max-height: 400px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  z-index: 1100;
+  margin-top: 0.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-box {
+  padding: 0.8rem;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fdfdfd;
+}
+
+.search-box input {
+  border: none !important;
+  padding: 0 !important;
+  font-size: 0.9rem !important;
+  width: 100%;
+  outline: none;
+}
+
+.country-list {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.country-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 0.9rem;
+}
+
+.country-item:hover {
+  background: #f5f5f5;
+}
+
+.country-item.selected {
+  background: #edf2f7;
+}
+
+.country-flag {
+  font-size: 1.2rem;
+  width: 24px;
+}
+
+.country-name {
+  flex: 1;
+  color: #333;
+}
+
+.dial-code {
+  color: #666;
+  font-weight: 600;
+}
+
 @media (max-width: 768px) {
   .page-container {
     padding: 1.5rem 1.2rem;
@@ -190,5 +316,9 @@ select {
 
   .submit-btn {
     width: 100%;
+  }
+
+  .country-dropdown {
+    width: 280px;
   }
 }
