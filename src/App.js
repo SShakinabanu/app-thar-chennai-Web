@@ -19,6 +19,7 @@ const ManageEvents = lazy(() => import('./pages/admin/ManageEvents'));
 const Registrations = lazy(() => import('./pages/admin/Registrations'));
 const Messages = lazy(() => import('./pages/admin/Messages'));
 const BannerManagement = lazy(() => import('./pages/admin/BannerManagement'));
+const CreateUpcomingEvent = lazy(() => import('./pages/admin/CreateUpcomingEvent'));
 
 // Layouts
 const PublicLayout = lazy(() => import('./layouts/PublicLayout'));
@@ -58,6 +59,7 @@ function App() {
               <Route path="registrations" element={<Registrations />} />
               <Route path="messages" element={<Messages />} />
               <Route path="banners" element={<BannerManagement />} />
+              <Route path="upcoming-events" element={<CreateUpcomingEvent />} />
             </Route>
           </Routes>
         </Suspense>
