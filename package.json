@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@supabase/supabase-js": "^2.100.0",
     "axios": "^1.13.5",
     "framer-motion": "^12.34.3",
     "lucide-react": "^0.575.0",

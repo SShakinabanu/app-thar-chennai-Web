@@ -27,7 +27,7 @@ const AdminLayout = lazy(() => import('./layouts/AdminLayout'));
 const ProtectedRoute = ({ children }) => {
   const { admin, loading } = useAuth();
   if (loading) return <div>Loading...</div>;
-  if (!admin) return <Navigate to="/admin/login" />;
+  if (!admin) return <Navigate to="/admin" />;
   return children;
 };
 
@@ -39,7 +39,7 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<PublicLayout />}>
-              <Route index element={<Membership />} />
+              <Route index element={<Navigate to="/join-us" replace />} />
               <Route path="home" element={<Home />} />
               <Route path="about" element={<About />} />
               <Route path="join-us" element={<Membership />} />
@@ -49,9 +49,10 @@ function App() {
             </Route>
 
             {/* Admin Routes */}
+            <Route path="/admin" element={<Login />} />
             <Route path="/admin/login" element={<Login />} />
-            <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
-              <Route index element={<Navigate to="/admin/dashboard" />} />
+            <Route path="/admin/panel" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+              <Route index element={<Navigate to="/admin/panel/dashboard" />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="events" element={<ManageEvents />} />
               <Route path="registrations" element={<Registrations />} />

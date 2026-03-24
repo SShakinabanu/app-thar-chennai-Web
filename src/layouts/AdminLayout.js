@@ -23,15 +23,15 @@ const AdminLayout = () => {
 
     const handleLogout = () => {
         logout();
-        navigate('/admin/login');
+        navigate('/admin');
     };
 
     const menuItems = [
-        { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard', subtext: 'System Overview' },
-        { path: '/admin/events', icon: Calendar, label: 'Expeditions', subtext: 'Event Management' },
-        { path: '/admin/registrations', icon: Users, label: 'Manifest', subtext: 'Member Influx' },
-        { path: '/admin/messages', icon: MessageSquare, label: 'Inbound', subtext: 'Support Terminal' },
-        { path: '/admin/banners', icon: ImageIcon, label: 'Assets', subtext: 'Visual Control' },
+        { path: '/admin/panel/dashboard', icon: LayoutDashboard, label: 'Dashboard', subtext: 'System Overview' },
+        { path: '/admin/panel/events', icon: Calendar, label: 'Expeditions', subtext: 'Event Management' },
+        { path: '/admin/panel/registrations', icon: Users, label: 'Manifest', subtext: 'Member Influx' },
+        { path: '/admin/panel/messages', icon: MessageSquare, label: 'Inbound', subtext: 'Support Terminal' },
+        { path: '/admin/panel/banners', icon: ImageIcon, label: 'Assets', subtext: 'Visual Control' },
     ];
 
     return (
