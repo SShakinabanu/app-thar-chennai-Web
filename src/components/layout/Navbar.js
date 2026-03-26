@@ -45,7 +45,10 @@ const Navbar = () => {
                 { label: 'Merchandise', to: '/merchandise' },
                 { label: 'Contact Us', to: '/contact' },
                 { label: 'Join Us', to: '/join-us' },
-                ...(admin?.is_admin ? [{ label: 'Upcoming Events', to: '/admin/panel/upcoming-events' }] : []),
+                ...(admin?.is_admin ? [
+                    { label: 'Upcoming Events', to: '/admin/panel/upcoming-events' },
+                    { label: 'Posts', to: '/admin/panel/posts' },
+                ] : []),
             ]
         },
     ];

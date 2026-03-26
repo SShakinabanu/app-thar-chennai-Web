@@ -10,10 +10,9 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const storedAdmin = localStorage.getItem('thar_admin_data');
-        if (storedAdmin) {
-            setAdmin(JSON.parse(storedAdmin));
-        }
+        // Do NOT restore admin session from localStorage on load.
+        // is_admin is only set after a successful live login verification.
+        localStorage.removeItem('thar_admin_data');
         setLoading(false);
     }, []);
 

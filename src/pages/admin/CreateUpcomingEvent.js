@@ -3,9 +3,13 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
+import dayjs from 'dayjs';
 import { supabase } from '../../supabaseClient';
 import { toast } from 'react-toastify';
-import { Image as ImageIcon, MapPin, Calendar, Clock, Upload, X, ArrowRight } from 'lucide-react';
+import { MapPin, Calendar, Upload, X, ArrowRight } from 'lucide-react';
 
 const CreateUpcomingEvent = () => {
     const [formData, setFormData] = useState({
@@ -20,14 +24,9 @@ const CreateUpcomingEvent = () => {
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef(null);
 
-    const formatTime = (date) => {
-        if (!date) return '';
-        let hours = date.getHours();
-        let minutes = date.getMinutes();
-        const ampm = hours >= 12 ? 'pm' : 'am';
-        hours = hours % 12 || 12;
-        minutes = minutes < 10 ? '0' + minutes : minutes;
-        return `${hours}:${minutes} ${ampm}`;
+    const formatTime = (dayjsObj) => {
+        if (!dayjsObj) return '';
+        return dayjsObj.format('h:mm a');
     };
 
     const formatDate = (date) => {
@@ -63,6 +62,7 @@ const CreateUpcomingEvent = () => {
         if (!formData.location) return toast.error('Please provide a location');
         if (!formData.event_date) return toast.error('Please select a date');
         if (!formData.start_time || !formData.end_time) return toast.error('Please set the timings');
+        if (formData.start_time.isAfter && !formData.start_time.isBefore(formData.end_time)) return toast.error('End time must be after start time');
 
         setLoading(true);
         try {
@@ -135,6 +135,9 @@ const CreateUpcomingEvent = () => {
                     .create-event-grid { grid-template-columns: 1fr !important; }
                     .header-title { font-size: 32px !important; }
                 }
+                @media (max-width: 768px) {
+                    .inner-form-grid { grid-template-columns: 1fr !important; }
+                }
             `}</style>
 
             <div style={{ marginBottom: '60px', textAlign: 'center', padding: '0 20px' }}>
@@ -143,9 +146,9 @@ const CreateUpcomingEvent = () => {
                 </h1>
             </div>
 
-            <form onSubmit={handleSubmit} className="create-event-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', padding: '0 20px', alignItems: 'stretch' }}>
+            <form onSubmit={handleSubmit} className="create-event-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '32px', padding: '0 20px', alignItems: 'stretch', width: '100%', boxSizing: 'border-box' }}>
                 {/* Left Section - Visual Asset */}
-                <div style={{ background: 'white', borderRadius: '32px', padding: '40px', boxShadow: '0 20px 50px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: '24px', border: '1px solid rgba(0,0,0,0.03)', height: '100%' }}>
+                <div style={{ background: 'white', borderRadius: '32px', padding: '40px', boxShadow: '0 20px 50px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: '24px', border: '1px solid rgba(0,0,0,0.03)', height: '100%', minWidth: 0 }}>
                     <h3 style={{ fontSize: '18px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#1a1a1a', borderBottom: '2px solid #f3f4f6', paddingBottom: '16px', marginBottom: '8px', fontFamily: 'Oswald, sans-serif' }}>Upload Image</h3>
                     
                     <div style={{ flexGrow: 1, minHeight: '300px', background: '#f9f9f9', borderRadius: '24px', position: 'relative', overflow: 'hidden', border: '2px dashed #eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -173,7 +176,7 @@ const CreateUpcomingEvent = () => {
                 </div>
 
                 {/* Right Section - Content + Logistics */}
-                <div style={{ background: 'white', borderRadius: '32px', padding: '40px', border: '1px solid rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column', gap: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.05)', height: '100%' }}>
+                <div style={{ background: 'white', borderRadius: '32px', padding: '40px', border: '1px solid rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column', gap: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.05)', height: '100%', minWidth: 0 }}>
                     <h3 style={{ fontSize: '18px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#1a1a1a', borderBottom: '2px solid #f3f4f6', paddingBottom: '16px', marginBottom: '8px', fontFamily: 'Oswald, sans-serif' }}>Event Details</h3>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -195,7 +198,7 @@ const CreateUpcomingEvent = () => {
                         </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                    <div className="inner-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', width: '100%', minWidth: 0 }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             <label style={{ fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#1a1a1a', opacity: 0.6, fontFamily: 'Oswald, sans-serif' }}>Target Date</label>
                             <div style={{ position: 'relative' }}>
@@ -205,38 +208,83 @@ const CreateUpcomingEvent = () => {
                                     onChange={(date) => setFormData({...formData, event_date: date})}
                                     dateFormat="dd MMM yyyy"
                                     className="custom-date-input"
-                                    customInput={<input style={{ paddingLeft: '54px' }} className="custom-date-input" />}
+                                    customInput={
+                                        <input 
+                                            style={{ 
+                                                paddingLeft: '54px',
+                                                height: '40px', // Match MUI small text field height
+                                                borderRadius: '12px', // Match MUI border radius
+                                                fontSize: '13px', // Match MUI font size
+                                                border: '1px solid #eee'
+                                            }} 
+                                            className="custom-date-input" 
+                                        />
+                                    }
                                     placeholderText="Select Date"
                                 />
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: 0 }}>
                             <label style={{ fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#1a1a1a', opacity: 0.6, fontFamily: 'Oswald, sans-serif' }}>Operational Timings</label>
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                                <DatePicker
-                                    selected={formData.start_time}
-                                    onChange={(time) => setFormData({...formData, start_time: time})}
-                                    showTimeSelect
-                                    showTimeSelectOnly
-                                    timeIntervals={15}
-                                    timeCaption="Time"
-                                    dateFormat="h:mm aa"
-                                    customInput={<input style={{ padding: '16px 12px', borderRadius: '12px', border: '1px solid #eee', background: '#f9f9f9', fontSize: '11px', fontWeight: 700, width: '100%', outline: 'none', color: '#1a1a1a' }} />}
-                                    placeholderText="From"
-                                />
-                                <DatePicker
-                                    selected={formData.end_time}
-                                    onChange={(time) => setFormData({...formData, end_time: time})}
-                                    showTimeSelect
-                                    showTimeSelectOnly
-                                    timeIntervals={15}
-                                    timeCaption="Time"
-                                    dateFormat="h:mm aa"
-                                    customInput={<input style={{ padding: '16px 12px', borderRadius: '12px', border: '1px solid #eee', background: '#f9f9f9', fontSize: '11px', fontWeight: 700, width: '100%', outline: 'none', color: '#1a1a1a' }} />}
-                                    placeholderText="To"
-                                />
-                            </div>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+                                    <MobileTimePicker
+                                        label="From"
+                                        value={formData.start_time}
+                                        onChange={(val) => setFormData({...formData, start_time: val})}
+                                        slotProps={{
+                                            textField: {
+                                                size: 'small',
+                                                fullWidth: true,
+                                                onClick: (e) => e.currentTarget.querySelector('button')?.click(),
+                                                sx: {
+                                                    '& .MuiOutlinedInput-root': {
+                                                        borderRadius: '12px',
+                                                        background: '#f9f9f9',
+                                                        fontWeight: 700,
+                                                        fontSize: '11px', // Slightly smaller font
+                                                        '& fieldset': { borderColor: '#eee' },
+                                                        '&:hover fieldset': { borderColor: '#c0002a' },
+                                                        '&.Mui-focused fieldset': { borderColor: '#c0002a' },
+                                                        cursor: 'pointer'
+                                                    },
+                                                    '& .MuiInputBase-input': { cursor: 'pointer', padding: '8.5px 12px' }, // Compact padding
+                                                    '& .MuiInputLabel-root.Mui-focused': { color: '#c0002a' },
+                                                }
+                                            },
+                                            actionBar: { actions: ['cancel', 'accept'] },
+                                        }}
+                                    />
+                                    <MobileTimePicker
+                                        label="To"
+                                        value={formData.end_time}
+                                        onChange={(val) => setFormData({...formData, end_time: val})}
+                                        slotProps={{
+                                            textField: {
+                                                size: 'small',
+                                                fullWidth: true,
+                                                onClick: (e) => e.currentTarget.querySelector('button')?.click(),
+                                                sx: {
+                                                    '& .MuiOutlinedInput-root': {
+                                                        borderRadius: '12px',
+                                                        background: '#f9f9f9',
+                                                        fontWeight: 700,
+                                                        fontSize: '11px', // Slightly smaller font
+                                                        '& fieldset': { borderColor: '#eee' },
+                                                        '&:hover fieldset': { borderColor: '#c0002a' },
+                                                        '&.Mui-focused fieldset': { borderColor: '#c0002a' },
+                                                        cursor: 'pointer'
+                                                    },
+                                                    '& .MuiInputBase-input': { cursor: 'pointer', padding: '8.5px 12px' }, // Compact padding
+                                                    '& .MuiInputLabel-root.Mui-focused': { color: '#c0002a' },
+                                                }
+                                            },
+                                            actionBar: { actions: ['cancel', 'accept'] },
+                                        }}
+                                    />
+                                </div>
+                            </LocalizationProvider>
                         </div>
                     </div>
 
