@@ -387,9 +387,6 @@ const CreatePost = () => {
                     <h1 className="header-title" style={{ fontSize: '48px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-0.04em', color: '#1a1a1a', marginBottom: '8px', fontFamily: 'Oswald, sans-serif' }}>
                         Create <span style={{ color: '#c0002a' }}>Post</span>
                     </h1>
-                    <p style={{ fontSize: '13px', color: 'rgba(0,0,0,0.35)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                        Admin · Blog Publisher {admin?.username ? `· ${admin.username}` : ''}
-                    </p>
                 </div>
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
@@ -430,15 +427,29 @@ const CreatePost = () => {
                     </button>
 
                     {/* Publish */}
-                    <button type="submit" disabled={loading} style={{
-                        background: loading ? '#e0e0e0' : '#c0002a', color: 'white', padding: '22px 32px',
-                        borderRadius: '18px', border: 'none', fontSize: '15px', fontWeight: 900,
-                        textTransform: 'uppercase', letterSpacing: '0.15em', cursor: loading ? 'not-allowed' : 'pointer',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px',
-                        boxShadow: loading ? 'none' : '0 12px 36px rgba(192,0,42,0.2)',
-                        transition: 'all 0.25s', fontFamily: 'Oswald, sans-serif',
-                    }}
-                        onMouseEnter={e => { if (!loading) e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                    <button 
+                        type="submit" 
+                        disabled={loading || !title.trim() || sections.length === 0 || sections.some(sec => sec.blocks.length === 0)} 
+                        style={{
+                            background: (loading || !title.trim() || sections.length === 0 || sections.some(sec => sec.blocks.length === 0)) ? '#e0e0e0' : '#c0002a', 
+                            color: 'white', 
+                            padding: '22px 32px',
+                            borderRadius: '18px', 
+                            border: 'none', 
+                            fontSize: '15px', 
+                            fontWeight: 900,
+                            textTransform: 'uppercase', 
+                            letterSpacing: '0.15em', 
+                            cursor: (loading || !title.trim() || sections.length === 0 || sections.some(sec => sec.blocks.length === 0)) ? 'not-allowed' : 'pointer',
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            gap: '12px',
+                            boxShadow: (loading || !title.trim() || sections.length === 0 || sections.some(sec => sec.blocks.length === 0)) ? 'none' : '0 12px 36px rgba(192,0,42,0.2)',
+                            transition: 'all 0.25s', 
+                            fontFamily: 'Oswald, sans-serif',
+                        }}
+                        onMouseEnter={e => { if (!loading && title.trim() && sections.length > 0 && !sections.some(sec => sec.blocks.length === 0)) e.currentTarget.style.transform = 'translateY(-2px)'; }}
                         onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
                     >
                         <ArrowRight size={22} /> {loading ? 'Publishing...' : 'Publish Post'}

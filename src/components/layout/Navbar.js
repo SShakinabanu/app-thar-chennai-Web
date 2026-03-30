@@ -48,6 +48,8 @@ const Navbar = () => {
                 ...(admin?.is_admin ? [
                     { label: 'Upcoming Events', to: '/admin/panel/upcoming-events' },
                     { label: 'Posts', to: '/admin/panel/posts' },
+                    { label: 'Activities', to: '/admin/panel/activities' },
+                    { label: 'Adventures', to: '/admin/panel/adventures' },
                 ] : []),
             ]
         },

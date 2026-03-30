@@ -91,7 +91,7 @@ const CreateUpcomingEvent = () => {
             }]);
 
             if (insertError) throw insertError;
-            toast.success('Event Published Successfully!');
+            toast.success('Event Published Successfully! 🎉');
             setFormData({ location: '', event_date: null, start_time: null, end_time: null });
             setContent('');
             setImage(null);
@@ -288,10 +288,32 @@ const CreateUpcomingEvent = () => {
                         </div>
                     </div>
 
-                    <button disabled={loading} type="submit" style={{ marginTop: 'auto', background: '#c0002a', color: 'white', padding: '24px', borderRadius: '16px', border: 'none', fontSize: '14px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', boxShadow: '0 10px 30px rgba(192,0,42,0.15)', transition: 'all 0.2s', fontFamily: 'Oswald, sans-serif' }}
-                        onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                    <button 
+                        disabled={loading || !image || !formData.location.trim() || !formData.event_date || !formData.start_time || !formData.end_time} 
+                        type="submit" 
+                        style={{ 
+                            marginTop: 'auto', 
+                            background: (loading || !image || !formData.location.trim() || !formData.event_date || !formData.start_time || !formData.end_time) ? '#e0e0e0' : '#c0002a', 
+                            color: 'white', 
+                            padding: '24px', 
+                            borderRadius: '16px', 
+                            border: 'none', 
+                            fontSize: '14px', 
+                            fontWeight: 900, 
+                            textTransform: 'uppercase', 
+                            letterSpacing: '0.15em', 
+                            cursor: (loading || !image || !formData.location.trim() || !formData.event_date || !formData.start_time || !formData.end_time) ? 'not-allowed' : 'pointer', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            gap: '12px', 
+                            boxShadow: (loading || !image || !formData.location.trim() || !formData.event_date || !formData.start_time || !formData.end_time) ? 'none' : '0 10px 30px rgba(192,0,42,0.15)', 
+                            transition: 'all 0.2s', 
+                            fontFamily: 'Oswald, sans-serif' 
+                        }}
+                        onMouseEnter={e => { if (!loading && image && formData.location.trim() && formData.event_date && formData.start_time && formData.end_time) e.currentTarget.style.transform = 'translateY(-2px)' }}
                         onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
-                        {loading ? 'Publishing...' : <><ArrowRight size={20} /> Broadcast Event</>}
+                        {loading ? 'Publishing...' : <><ArrowRight size={20} /> Submit Event</>}
                     </button>
                 </div>
             </form>

@@ -4,11 +4,11 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import '../../App.css';
 import '../Home.css';
-
-// Default to India
-
+import { toast } from 'react-toastify';
+import { supabase } from '../../supabaseClient';
 
 const Home = () => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
     registeredOwner: '',
@@ -29,7 +29,6 @@ const Home = () => {
 
   const relationshipInputRef = useRef(null);
   const ownershipInputRef = useRef(null);
-
 
   const validateField = (name, value) => {
     let error = '';
@@ -77,27 +76,229 @@ const Home = () => {
     if (inputRef.current) inputRef.current.value = '';
   };
 
-  const handleSubmit = (e) => {
+  const generateApplicationPDF = async (data, fileUrls) => {
+    try {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      // 1. Draw "Logo"
+      doc.setFillColor(192, 0, 42); // #c0002a
+      doc.roundedRect(20, 15, 20, 20, 4, 4, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bolditalic');
+      doc.setFontSize(22);
+      doc.text('T', 26, 29);
+
+      // 2. Header Text
+      doc.setTextColor(26, 26, 26);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(22);
+      doc.text('THAR CHENNAI', 45, 25);
+      doc.setFontSize(9);
+      doc.setTextColor(150, 150, 150);
+      doc.text('4x4 MOTOR CLUB - MEMBERSHIP APPLICATION', 45, 30);
+      
+      doc.setDrawColor(230, 230, 230);
+      doc.line(20, 40, 190, 40);
+
+      // 3. Application Summary Title
+      doc.setFontSize(14);
+      doc.setTextColor(192, 0, 42);
+      doc.text('APPLICATION SUMMARY', 20, 52);
+
+      // 4. Data Layout (Manual Alignment)
+      const startY = 65;
+      const lineHeight = 10;
+      doc.setFontSize(10);
+      doc.setTextColor(60, 60, 60);
+      doc.setFont('helvetica', 'bold');
+
+      const fields = [
+        { label: 'Full Name:', value: data.fullName },
+        { label: 'Registered Owner:', value: data.registeredOwner || 'Same as applicant' },
+        { label: 'Email Address:', value: data.email },
+        { label: 'Phone Number:', value: `+${data.phone}` },
+        { label: 'Blood Group:', value: data.bloodGroup },
+        { label: 'Vehicle Types:', value: Object.entries(data.vehicleType).filter(([_, v]) => v).map(([k]) => k).join(', ') },
+        { label: 'Variant:', value: data.variant },
+        { label: 'Registration No:', value: data.registrationNumber },
+        { label: 'Submission Date:', value: new Date().toLocaleString() }
+      ];
+
+      fields.forEach((field, index) => {
+        const y = startY + (index * lineHeight);
+        doc.setFont('helvetica', 'bold');
+        doc.text(field.label, 20, y);
+        doc.setFont('helvetica', 'normal');
+        doc.text(String(field.value), 65, y);
+      });
+
+      // 5. Document Links Section
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(192, 0, 42);
+      doc.text('ATTACHED DOCUMENTS', 20, startY + (fields.length * lineHeight) + 10);
+      
+      doc.setFontSize(9);
+      doc.setTextColor(0, 0, 255);
+      let docY = startY + (fields.length * lineHeight) + 20;
+      
+      if (fileUrls.ownership) {
+        doc.text('View Ownership Proof (RC/Insurance)', 20, docY);
+        doc.textWithLink(fileUrls.ownership, 20, docY + 4, { url: fileUrls.ownership });
+        docY += 12;
+      }
+      
+      if (fileUrls.relationship) {
+        doc.text('View Relationship Proof', 20, docY);
+        doc.textWithLink(fileUrls.relationship, 20, docY + 4, { url: fileUrls.relationship });
+      }
+
+      // Footer
+      doc.setTextColor(180, 180, 180);
+      doc.setFontSize(8);
+      doc.text('© Thar Chennai 4x4 Motor Club. All Rights Reserved.', 20, 280);
+
+      return doc.output('blob');
+    } catch (error) {
+      console.error('PDF Generation Error:', error);
+      throw error;
+    }
+  };
+
+  const uploadFileToSupabase = async (file, path) => {
+    const localFallback = `http://localhost:3000/${path}`;
+    try {
+      const { data, error } = await supabase.storage
+        .from('events')
+        .upload(path, file, { upsert: true });
+
+      if (error) {
+        console.warn('Storage upload error, using fallback:', error);
+        return localFallback;
+      }
+      
+      const { data: { publicUrl } } = supabase.storage
+        .from('events')
+        .getPublicUrl(data.path);
+        
+      return publicUrl;
+    } catch (err) {
+      console.warn('Storage upload fallback:', err);
+      return localFallback;
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newErrors = {};
+    setLoading(true);
+    
+    try {
+      const newErrors = {};
+      const fieldsToValidate = ['fullName', 'email', 'phone', 'registrationNumber', 'variant', 'bloodGroup', 'agreed', 'vehicleType'];
+      
+      fieldsToValidate.forEach(key => {
+        const error = validateField(key, formData[key]);
+        if (error) newErrors[key] = error;
+      });
 
-    const fieldsToValidate = ['fullName', 'email', 'phone', 'registrationNumber', 'variant', 'bloodGroup', 'agreed', 'vehicleType'];
-    fieldsToValidate.forEach(key => {
-      const error = validateField(key, formData[key]);
-      if (error) newErrors[key] = error;
-    });
+      if (!files.ownershipProof) {
+        newErrors.ownershipProof = 'Vehicle ownership proof is required.';
+        setErrors(prev => ({ ...prev, ownershipProof: 'Vehicle ownership proof is required.' }));
+      }
 
-    if (!files.ownershipProof) {
-      newErrors.ownershipProof = 'Vehicle ownership proof is required.';
-      setErrors(prev => ({ ...prev, ownershipProof: 'Vehicle ownership proof is required.' }));
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(prev => ({ ...prev, ...newErrors }));
+        setLoading(false);
+        return;
+      }
+
+      // 1. Upload Proof Documents
+      const timestamp = Date.now();
+      const fileUrls = { ownership: '', relationship: '' };
+      
+      fileUrls.ownership = await uploadFileToSupabase(
+        files.ownershipProof, 
+        `membership-applications/owner_${timestamp}_${files.ownershipProof.name}`
+      );
+
+      if (files.relationshipProof) {
+        fileUrls.relationship = await uploadFileToSupabase(
+          files.relationshipProof, 
+          `membership-applications/rel_${timestamp}_${files.relationshipProof.name}`
+        );
+      }
+
+      // 2. Generate and Upload Application PDF
+      const pdfBlob = await generateApplicationPDF(formData, fileUrls);
+      const pdfUrl = await uploadFileToSupabase(
+        pdfBlob, 
+        `membership-applications/app_${timestamp}_${formData.fullName.replace(/\s+/g, '_')}.pdf`
+      );
+
+      // 3. Insert into Database
+      const vehicleTypesStr = Object.entries(formData.vehicleType)
+        .filter(([_, v]) => v)
+        .map(([k]) => k)
+        .join(', ');
+
+      const { error: insertError } = await supabase
+        .from('join_requests')
+        .insert([{
+          full_name: formData.fullName,
+          registered_owner: formData.registeredOwner,
+          email: formData.email,
+          phone: formData.phone,
+          thar_registration_number: formData.registrationNumber,
+          vehicle_type: vehicleTypesStr,
+          variant: formData.variant,
+          blood_group: formData.bloodGroup,
+          ownership_proof: fileUrls.ownership,
+          relationship_proof: fileUrls.relationship,
+          is_agreed: formData.agreed,
+          pdf_url: pdfUrl // NOTE: Please add this column to your table if not present!
+        }]);
+
+      if (insertError) throw insertError;
+
+      // 4. Send Email Notification via Backend API (Nodemailer)
+      try {
+        const response = await fetch('http://localhost:5000/api/send-membership-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...formData,
+            thar_registration_number: formData.registrationNumber,
+            vehicleType: vehicleTypesStr,
+            ownership_proof: fileUrls.ownership,
+            relationship_proof: fileUrls.relationship,
+            pdf_url: pdfUrl
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Backend failed to send email');
+        }
+
+        console.log('Email sent successfully via Backend!');
+      } catch (emailError) {
+        console.error('Email Notification Error:', emailError);
+        toast.warning('Data saved, but notification email failed to send.');
+      }
+
+      toast.success('Registration Complete! 🏜️ Check your email.');
+      setFormData({
+        fullName: '', registeredOwner: '', email: '', phone: '',
+        registrationNumber: '', vehicleType: { Thar: false, 'Thar ROXX': false },
+        variant: '', bloodGroup: '', agreed: false
+      });
+      setFiles({ relationshipProof: null, ownershipProof: null });
+      
+    } catch (error) {
+      console.error('Submission Error:', error);
+      toast.error('Error: ' + error.message);
+    } finally {
+      setLoading(false);
     }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(prev => ({ ...prev, ...newErrors }));
-      return;
-    }
-
-    alert('Form submitted successfully!');
   };
 
   return (
@@ -365,7 +566,14 @@ const Home = () => {
             )}
           </div>
 
-          <button type="submit" className="submit-btn">Submit</button>
+          <button 
+            type="submit" 
+            className="submit-btn" 
+            disabled={loading}
+            style={{ opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+          >
+            {loading ? 'Submitting Application...' : 'Submit Application'}
+          </button>
         </form>
       </div>
     </div>
