@@ -152,7 +152,7 @@ const Navbar = () => {
                                             <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>
                                     </button>
-                                    <div className="nav-dropdown">
+                                    <div className="nav-dropdown" style={item.label === 'More' ? { left: 'auto', right: 0 } : {}}>
                                         <div className="nav-dropdown-inner">
                                             {item.dropdown.map((sub) => (
                                                 <Link key={sub.label} to={sub.to} className="nav-dropdown-link">

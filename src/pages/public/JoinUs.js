@@ -209,6 +209,14 @@ const Home = () => {
       if (Object.keys(newErrors).length > 0) {
         setErrors(prev => ({ ...prev, ...newErrors }));
         setLoading(false);
+        
+        // Scroll to the first error
+        setTimeout(() => {
+          const firstErrorField = document.querySelector('.error-input, .error-message, .upload-btn-error');
+          if (firstErrorField) {
+            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 100);
         return;
       }
 
@@ -302,7 +310,7 @@ const Home = () => {
   };
 
   return (
-    <div className="bg-[#fff9f2] min-h-screen pt-32 pb-20">
+    <div className="bg-[#fff9f2] min-h-screen pt-24 pb-20">
       <div className="page-container">
         <section className="form-intro">
           <p>
